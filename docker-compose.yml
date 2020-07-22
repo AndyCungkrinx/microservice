@@ -1,0 +1,26 @@
+version: "3"
+services:
+# Configuration for Web service
+ nginx:
+    build:
+      context: ./docker/nginx-php7.2
+    ports:
+      - 80:80
+      - 443:443
+      - 81:81
+      - 9100:9100
+    volumes:
+      - ./config/custom.ini:/etc/php7/conf.d/custom.ini
+      - ./config/vhost.conf:/etc/nginx/sites-enabled/vhost.conf
+      - ./config/supervisord.conf:/etc/supervisord.conf
+      #- ./config/vhost.conf:/etc/nginx/sites-enabled/vhost2.conf # Copy vhost.conf, rename and open then edit using your domain
+      - ./ssl:/etc/nginx/ssl
+
+      # Web root directory
+      - ./sites/abcd.com:/usr/share/nginx/html/abcd.com
+      #- ./sites/abcd.com:/usr/share/nginx/html/xyz.com # Uncoment this if using multisite
+
+      # Logging
+      - ./log/nginx:/var/log/nginx
+      - ./log/php7:/var/log/php7
+    restart: always
